@@ -6,15 +6,9 @@ services:
     startCommand: gunicorn app:app
     envVars:
       - key: SECRET_KEY
-        value: "a_really_secret_key"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: confessions-db
-          property: connectionString
+      - key: SQLALCHEMY_DATABASE_URI
       - key: GOOGLE_CLIENT_ID
-        value: "YOUR_GOOGLE_CLIENT_ID"
       - key: GOOGLE_CLIENT_SECRET
-        value: "YOUR_GOOGLE_CLIENT_SECRET"
 
 databases:
   - name: confessions-db

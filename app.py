@@ -8,11 +8,13 @@ from flask_migrate import Migrate
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_dance.consumer import oauth_authorized
 from sqlalchemy.orm.exc import NoResultFound
-from dotenv import load_dotenv
 import os
 import random
 
-load_dotenv()
+if os.getenv("FLASK_ENV") != "production":
+    from dotenv import load_dotenv
+    load_dotenv()
+
 from flask import url_for
 
 
@@ -21,7 +23,6 @@ from flask import url_for
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
-app.config["OAUTHLIB_INSECURE_TRANSPORT"] = True  # only for local dev
 
 google_bp = make_google_blueprint(
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
@@ -204,4 +205,4 @@ def admin_dashboard():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_ENV") != "production")
