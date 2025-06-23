@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section class="card mb-4">
+    <div class="confession-meta">
+      <span>Posted {{ confession.timestamp.strftime('%b %d, %Y at %I:%M %p') }}</span>
+    </div>
+    
+    <p class="confession-content">{{ confession.content }}</p>
+    
+    <div class="reaction-container">
+      <a href="{{ url_for('react', confession_id=confession.id, emoji='❤️') }}" class="reaction-btn" title="Love">❤️ 
+        <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '❤️') | list | length }}</span>
+      </a>
+      <a href="{{ url_for('react', confession_id=confession.id, emoji='😂') }}" class="reaction-btn" title="Funny">😂 
+        <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '😂') | list | length }}</span>
+      </a>
+      <a href="{{ url_for('react', confession_id=confession.id, emoji='🔥') }}" class="reaction-btn" title="Fire">🔥 
+        <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '🔥') | list | length }}</span>
+      </a>
+      <a href="{{ url_for('react', confession_id=confession.id, emoji='😢') }}" class="reaction-btn" title="Sad">😢 
+        <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '😢') | list | length }}</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Comments ({{ comments | length }})</h3>
+    
+    {% if comments %}
+      <ul class="comment-list">
+        {% for comment in comments %}
+          <li class="comment-item mb-3">
+            <div class="comment-meta">
+              <span>Posted {{ comment.timestamp.strftime('%b %d, %Y at %I:%M %p') }}</span>
+            </div>
+            
+            <p class="comment-content">{{ comment.content }}</p>
+            
+            <div class="reaction-container">
+              <a href="{{ url_for('react_comment', comment_id=comment.id, emoji='👍') }}" class="reaction-btn" title="Like">👍 
+                <span class="reaction-count">{{ comment.reactions | selectattr('emoji', 'equalto', '👍') | list | length }}</span>
+              </a>
+              <a href="{{ url_for('react_comment', comment_id=comment.id, emoji='❤️') }}" class="reaction-btn" title="Love">❤️ 
+                <span class="reaction-count">{{ comment.reactions | selectattr('emoji', 'equalto', '❤️') | list | length }}</span>
+              </a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No comments yet. Be the first to share your thoughts!</p>
+    {% endif %}
+    
+    {% if current_user.is_authenticated %}
+      <div class="mt-4">
+        <h4>Add a Comment</h4>
+        <form method="POST">
+          {{ form.hidden_tag() }}
+          
+          <div class="form-group">
+            {{ form.content(class="form-control", placeholder="Write your comment...") }}
+          </div>
+          
+          {{ form.submit(class="btn") }}
+        </form>
+      </div>
+    {% else %}
+      <p class="text-center mt-2">
+        <a href="{{ url_for('login') }}">Login</a> to leave a comment
+      </p>
+    {% endif %}
+  </section>
+  
+  <div class="text-center mt-4">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to All Confessions</a>
+  </div>
+{% endblock %}

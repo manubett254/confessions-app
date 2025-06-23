@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 class="text-center">Share Your Confession</h2>
+    
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      
+      <div class="form-group">
+        {{ form.content.label }}
+        {{ form.content(class="form-control", placeholder="What's on your mind?") }}
+      </div>
+      
+      <div class="flex gap-2">
+        {{ form.submit(class="btn") }}
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

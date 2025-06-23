@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section class="text-center mb-4">
+    <h1>Welcome to Confessions</h1>
+    <p class="mb-3">Share your thoughts anonymously or with your identity</p>
+    
+    <div class="flex justify-center gap-2 mb-4">
+      <a href="{{ url_for('confess') }}" class="btn">Post a Confession</a>
+      {% if current_user.is_admin %}
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Admin Dashboard</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section>
+    <h2 class="mb-3">Recent Confessions</h2>
+    
+    {% if confessions %}
+      <ul class="confession-list">
+        {% for confession in confessions %}
+          <li class="card confession-item">
+            <div class="confession-meta">
+              <span>{{ confession.timestamp.strftime('%b %d, %Y at %I:%M %p') }}</span>
+              <span>
+                <a href="{{ url_for('confession_detail', confession_id=confession.id) }}" class="text-secondary">
+                  View & Comment
+                </a>
+              </span>
+            </div>
+            
+            <p class="confession-content">{{ confession.content }}</p>
+            
+            <div class="reaction-container">
+              <a href="{{ url_for('react', confession_id=confession.id, emoji='❤️') }}" class="reaction-btn" title="Love">❤️ 
+                <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '❤️') | list | length }}</span>
+              </a>
+              <a href="{{ url_for('react', confession_id=confession.id, emoji='😂') }}" class="reaction-btn" title="Funny">😂 
+                <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '😂') | list | length }}</span>
+              </a>
+              <a href="{{ url_for('react', confession_id=confession.id, emoji='🔥') }}" class="reaction-btn" title="Fire">🔥 
+                <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '🔥') | list | length }}</span>
+              </a>
+              <a href="{{ url_for('react', confession_id=confession.id, emoji='😢') }}" class="reaction-btn" title="Sad">😢 
+                <span class="reaction-count">{{ confession.reactions | selectattr('emoji', 'equalto', '😢') | list | length }}</span>
+              </a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="card text-center">
+        <p>No confessions yet. Be the first to share!</p>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}
