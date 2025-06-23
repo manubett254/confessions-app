@@ -5,10 +5,11 @@ services:
     buildCommand: ""
     startCommand: gunicorn app:app
     envVars:
-      - key: SECRET_KEY
-      - key: SQLALCHEMY_DATABASE_URI
-      - key: GOOGLE_CLIENT_ID
-      - key: GOOGLE_CLIENT_SECRET
+    - key: SQLALCHEMY_DATABASE_URI
+      fromDatabase:
+        name: confessions-db
+        property: connectionString
+
 
 databases:
   - name: confessions-db
